@@ -1,6 +1,7 @@
 const Excel = require('exceljs');
 const Menu = require('./models/menu');
 const db = require('./connectdb')
+const fs = require('fs').promises;
 
 
 async function getColumnCount(filePath) {
@@ -84,6 +85,7 @@ async function convertMenu() {
     console.log('convertMenu called');
     try {
         const filePath = 'menu.xlsx';
+        await fs.access(filePath);
         const totalColumns = await getColumnCount(filePath);
         console.log(totalColumns);
 
@@ -91,11 +93,17 @@ async function convertMenu() {
             const columnNumber = i;
             await saveData(filePath, columnNumber);
         }
-
-        db.close();
-    } catch (error) {
-        console.error('Error', error.message);
-    }
+        
+    }  catch (error) {
+      // Check if the error is due to the file not existing
+      if (error.code === 'ENOENT') {
+          // File not found error
+          throw new Error('Menu file not found');
+      } else {
+          console.error('Error', error.message);
+          throw error; // Re-throw other errors
+      }
+  }
 };
 
 module.exports = convertMenu;
