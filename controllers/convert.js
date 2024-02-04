@@ -1,6 +1,6 @@
 const Excel = require('exceljs');
-const Menu = require('./models/menu');
-const db = require('./connectdb')
+const Menu = require('../models/menu');
+const db = require('../models/connectdb')
 const fs = require('fs').promises;
 
 
@@ -34,6 +34,14 @@ async function saveMenu(menuData) {
     }
   }
   
+  async function clearDatabase() {
+    try {
+        await Menu.deleteMany({}); // Delete all documents from the Menu collection
+        console.log('Database cleared successfully');
+    } catch (error) {
+        console.error('Error clearing database:', error);
+    }
+}
   
 
 async function saveData(filePath, columnNumber) {
@@ -88,6 +96,8 @@ async function convertMenu() {
         await fs.access(filePath);
         const totalColumns = await getColumnCount(filePath);
         console.log(totalColumns);
+
+        await clearDatabase();
 
         for (let i = 1; i < totalColumns + 1; i++) {
             const columnNumber = i;

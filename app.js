@@ -1,15 +1,21 @@
+require('dotenv').config();
+
 const express = require('express');
-const uploadFile = require('./save');
-const convertMenu = require('./convert');
-const { getMenuDataByDate } = require('./getData'); 
+const multer = require('multer');
+const uploadFile = require('./controllers/save');
+const convertMenu = require('./controllers/convert');
+const { getAllMenuData, getAllMenuDataNoFormat } = require('./controllers/getData'); 
+const checkPassword = require('./middlewares/auth');
 
 const app = express();
 
-app.post('/upload-menu', uploadFile, (req, res) => {
+const upload = multer();
+
+app.post('/upload-menu-ssms-tt', uploadFile, (req, res) => {
     return res.send('File uploaded!');
 });
 
-app.get('/convert-menu', async (req, res) => {
+app.post('/convert-menu-ssms-tt', upload.none(), checkPassword, async (req, res) => {
     try {
         await convertMenu();
         return res.send('Menu converted and saved!');
@@ -24,13 +30,23 @@ app.get('/convert-menu', async (req, res) => {
     }
 });
 
-app.get('/menu/:date', async (req, res) => {
-    const { date } = req.params;
 
+app.get('/menu', async (req, res) => {
     try {
-        // Wait for the conversion to complete before fetching data
         await convertMenu();
-        const menuData = await getMenuDataByDate(new Date(date));
+        
+        const menuData = await getAllMenuData();
+        return res.json(menuData);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/menu-2', async (req, res) => {
+    try {
+        await convertMenu();
+        
+        const menuData = await getAllMenuDataNoFormat();
         return res.json(menuData);
     } catch (error) {
         return res.status(500).json({ error: 'Internal Server Error during menu retrieval' });
