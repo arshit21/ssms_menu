@@ -6,8 +6,11 @@ const uploadFile = require('./controllers/save');
 const convertMenu = require('./controllers/convert');
 const { getAllMenuData, getAllMenuDataNoFormat } = require('./controllers/getData'); 
 const checkPassword = require('./middlewares/auth');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
 
 const upload = multer();
 
