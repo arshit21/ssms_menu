@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/ssms', {
+mongoose.connect('mongodb://0.0.0.0/ssms/', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
