@@ -5,12 +5,8 @@ const multer = require('multer');
 const uploadFile = require('./controllers/save');
 const convertMenu = require('./controllers/convert');
 const { getAllMenuData, getAllMenuDataNoFormat } = require('./controllers/getData'); 
-const checkPassword = require('./middlewares/auth');
-// const cors = require('cors');
 
 const app = express();
-
-// app.use(cors());
 
 const upload = multer();
 
@@ -18,7 +14,7 @@ app.post('/upload-menu-ssms-tt', uploadFile, (req, res) => {
     return res.send('File uploaded!');
 });
 
-app.post('/convert-menu-ssms-tt', upload.none(), checkPassword, async (req, res) => {
+app.post('/convert-menu-ssms-tt', upload.none(), async (req, res) => {
     try {
         await convertMenu();
         return res.send('Menu converted and saved!');
