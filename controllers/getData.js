@@ -1,4 +1,5 @@
 const Menu = require('../models/menu');
+const moment = require('moment');
 
 async function getAllMenuData() {
     try {
@@ -31,7 +32,33 @@ async function getAllMenuDataNoFormat() {
     }
 }
 
+
+ async function getNextSevenDaysMenu() {
+    try {
+        let nextSevenDaysMenu = [];
+        for (let i = 0; i < 7; i++) {
+            let date = moment().add(i, 'days').format('YYYY-MM-DD');
+            let menuData = await Menu.findOne({ date: date });
+
+            if (menuData) {
+                const formattedItems = [];
+                formattedItems.push(menuData.day.toUpperCase(), menuData.date);
+                formattedItems.push("BREAKFAST", ...menuData.breakfast);
+                formattedItems.push(menuData.day.toUpperCase(), "LUNCH", ...menuData.lunch);
+                formattedItems.push(menuData.day.toUpperCase(), "DINNER", ...menuData.dinner);
+                nextSevenDaysMenu.push({date: date, data: formattedItems});
+            } else {
+                nextSevenDaysMenu.push({date: date, data: null});
+            }
+        }
+        return {data: nextSevenDaysMenu};
+    } catch (error) {
+        throw new Error('Error fetching and formatting menu data for the next seven days');
+    }
+};
+
 module.exports = { 
-  getAllMenuData,
-  getAllMenuDataNoFormat
- };
+    getAllMenuData,
+    getAllMenuDataNoFormat,
+    getNextSevenDaysMenu
+   };

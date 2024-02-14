@@ -4,7 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const uploadFile = require('./controllers/save');
 const convertMenu = require('./controllers/convert');
-const { getAllMenuData, getAllMenuDataNoFormat } = require('./controllers/getData'); 
+const { getAllMenuData, getAllMenuDataNoFormat, getNextSevenDaysMenu } = require('./controllers/getData'); 
 
 const app = express();
 
@@ -52,6 +52,15 @@ app.get('/menu-2', async (req, res) => {
     }
 });
 
-app.listen(3000,'0.0.0.0', function () {
+app.get('/menu-next-seven-days', async (req, res) => {
+    try {
+        const menuData = await getNextSevenDaysMenu();
+        return res.json(menuData);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error during menu retrieval for the next seven days' });
+    }
+});
+
+app.listen(3000,function () {
     console.log('Server is running on http://localhost:3000');
 });
