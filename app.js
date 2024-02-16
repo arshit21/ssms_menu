@@ -61,6 +61,6 @@ app.get('/menu-next-seven-days', async (req, res) => {
     }
 });
 
-app.listen(3000,function () {
+app.listen(3000,'0.0.0.0',function () {
     console.log('Server is running on http://localhost:3000');
 });
