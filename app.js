@@ -57,6 +57,7 @@ app.get('/menu-next-seven-days', async (req, res) => {
         const menuData = await getNextSevenDaysMenu();
         return res.json(menuData);
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: 'Internal Server Error during menu retrieval for the next seven days' });
     }
 });

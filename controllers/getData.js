@@ -41,13 +41,18 @@ async function getAllMenuDataNoFormat() {
             let menuData = await Menu.findOne({ date: date }, { _id: 0, __v: 0 });
 
             if (menuData) {
-                nextSevenDaysMenu.push(menuData);
+                menuData = menuData.toObject();
+                if (menuData.date) {
+                    menuData.date = menuData.date.toISOString().split('T')[0];
+                    nextSevenDaysMenu.push(menuData);
+                }
             } else {
                 nextSevenDaysMenu.push(null);
             }
         }
         return {nextSevenDaysMenu};
     } catch (error) {
+        console.log(error);
         throw new Error('Error fetching and formatting menu data for the next seven days');
     }
 };
