@@ -38,20 +38,15 @@ async function getAllMenuDataNoFormat() {
         let nextSevenDaysMenu = [];
         for (let i = 0; i < 7; i++) {
             let date = moment().add(i, 'days').format('YYYY-MM-DD');
-            let menuData = await Menu.findOne({ date: date });
+            let menuData = await Menu.findOne({ date: date }, { _id: 0, __v: 0 });
 
             if (menuData) {
-                const formattedItems = [];
-                formattedItems.push(menuData.day.toUpperCase(), menuData.date);
-                formattedItems.push("BREAKFAST", ...menuData.breakfast);
-                formattedItems.push(menuData.day.toUpperCase(), "LUNCH", ...menuData.lunch);
-                formattedItems.push(menuData.day.toUpperCase(), "DINNER", ...menuData.dinner);
-                nextSevenDaysMenu.push({date: date, data: formattedItems});
+                nextSevenDaysMenu.push(menuData);
             } else {
-                nextSevenDaysMenu.push({date: date, data: null});
+                nextSevenDaysMenu.push(null);
             }
         }
-        return {data: nextSevenDaysMenu};
+        return {nextSevenDaysMenu};
     } catch (error) {
         throw new Error('Error fetching and formatting menu data for the next seven days');
     }
