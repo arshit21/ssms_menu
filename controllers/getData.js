@@ -50,7 +50,7 @@ async function getAllMenuDataNoFormat() {
                 nextSevenDaysMenu.push(null);
             }
         }
-        return {nextSevenDaysMenu};
+        return [...nextSevenDaysMenu];
     } catch (error) {
         console.log(error);
         throw new Error('Error fetching and formatting menu data for the next seven days');
