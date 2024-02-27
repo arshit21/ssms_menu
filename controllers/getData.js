@@ -1,24 +1,27 @@
 const Menu = require('../models/menu');
 const moment = require('moment');
 
-async function getAllMenuData() {
+async function getNextFifteenDaysMenu() {
     try {
-        // Retrieve menu data from the database
-        const menuData = await Menu.find({});
+        let nextFifteenDaysMenu = [];
+        for (let i = 0; i < 15; i++) {
+            let date = moment().add(i, 'days').format('YYYY-MM-DD');
+            let menuData = await Menu.findOne({ date: date });
 
-        // Format the retrieved menu data
-        const formattedData = menuData.map(item => {
-            const formattedItems = [];
-            formattedItems.push(item.day.toUpperCase(), item.date);
-            formattedItems.push("BREAKFAST", ...item.breakfast);
-            formattedItems.push(item.day.toUpperCase(), "LUNCH", ...item.lunch);
-            formattedItems.push(item.day.toUpperCase(), "DINNER", ...item.dinner);
-            return formattedItems;
-        });
-
-        return {data: formattedData};
+            if (menuData) {
+                const formattedItems = [];
+                formattedItems.push(menuData.day.toUpperCase(), menuData.date.toISOString().split('T')[0]);
+                formattedItems.push("BREAKFAST", ...menuData.breakfast);
+                formattedItems.push(menuData.day.toUpperCase(), "LUNCH", ...menuData.lunch);
+                formattedItems.push(menuData.day.toUpperCase(), "DINNER", ...menuData.dinner);
+                nextFifteenDaysMenu.push(formattedItems);
+            } else {
+                nextFifteenDaysMenu.push(null);
+            }
+        }
+        return {data: nextFifteenDaysMenu};
     } catch (error) {
-        throw new Error('Error fetching and formatting menu data');
+        throw new Error('Error fetching and formatting menu data for the next fifteen days');
     }
 }
 
@@ -58,7 +61,7 @@ async function getAllMenuDataNoFormat() {
 };
 
 module.exports = { 
-    getAllMenuData,
+    getNextFifteenDaysMenu,
     getAllMenuDataNoFormat,
     getNextSevenDaysMenu
    };

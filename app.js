@@ -4,7 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const uploadFile = require('./controllers/save');
 const convertMenu = require('./controllers/convert');
-const { getAllMenuData, getAllMenuDataNoFormat, getNextSevenDaysMenu } = require('./controllers/getData'); 
+const { getNextFifteenDaysMenu, getAllMenuDataNoFormat, getNextSevenDaysMenu } = require('./controllers/getData'); 
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.get('/menu', async (req, res) => {
     try {
         await convertMenu();
         
-        const menuData = await getAllMenuData();
+        const menuData = await getNextFifteenDaysMenu();
         return res.json(menuData);
     } catch (error) {
         return res.status(500).json({ error: error.message });

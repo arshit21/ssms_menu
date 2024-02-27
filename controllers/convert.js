@@ -34,14 +34,14 @@ async function saveMenu(menuData) {
     }
   }
   
-  async function clearDatabase() {
-    try {
-        await Menu.deleteMany({}); // Delete all documents from the Menu collection
-        console.log('Database cleared successfully');
-    } catch (error) {
-        console.error('Error clearing database:', error);
-    }
-}
+//   async function clearDatabase() {
+//     try {
+//         await Menu.deleteMany({}); // Delete all documents from the Menu collection
+//         console.log('Database cleared successfully');
+//     } catch (error) {
+//         console.error('Error clearing database:', error);
+//     }
+// }
   
 
 async function saveData(filePath, columnNumber) {
@@ -97,7 +97,7 @@ async function convertMenu() {
         const totalColumns = await getColumnCount(filePath);
         console.log(totalColumns);
 
-        await clearDatabase();
+        // await clearDatabase();
 
         for (let i = 1; i < totalColumns + 1; i++) {
             const columnNumber = i;
